@@ -1,30 +1,13 @@
-use chrono::{DateTime, Local};
-use rusqlite::Connection;
-
-#[derive(Debug)]
-struct Todo {
-    id: i32,
-    name: String,
-    time: String
-}
-
+mod database;
+use database::sql_database::SqlDatabase;
 
 fn main(){
-    let conn = Connection::open("database.db").unwrap();
+    let db = SqlDatabase::new("database.db".to_string());
 
-    let mut todo = conn.prepare("SELECT * FROM todo").unwrap();
+    let test = db.get_todos();
 
-    let todo_iter = todo.query_map([], |row| {
-        Ok(Todo{
-            id: row.get(0).unwrap(),
-            name: row.get(1).unwrap(),
-            time: row.get(2).unwrap()
-
-        })
-    }).unwrap();
-
-    for t in todo_iter {
-        println!("{:?}", t.unwrap());
-    }
+    test.iter().for_each(|t| {
+        println!("{:?}", t);
+    });
 
 }
