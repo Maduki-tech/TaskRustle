@@ -16,7 +16,9 @@ impl Server {
     #[tokio::main]
     pub async fn start(&self) {
         let app = Router::new().route("/", get(self.get_handler()));
-        let listner = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+        let addr = "0.0.0.0:".to_string() + &self.port.to_string();
+        println!("Listening on {}", addr);
+        let listner = tokio::net::TcpListener::bind(addr).await.unwrap();
         axum::serve(listner, app).await.unwrap();
     }
 
